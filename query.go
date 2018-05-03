@@ -1,13 +1,15 @@
 package api
 
+import "time"
+
 type (
 	Query struct {
-		Granularity string  `json:"granularity,omitempty"`
-		Start       string  `json:"start,omitempty"`
-		End         string  `json:"end,omitempty"`
-		Saved       *Saved  `json:"saved,omitempty"`
-		Filter      *Filter `json:"filter,omitempty"`
-		Metric      string  `json:"metric,omitempty"`
+		Granularity string    `json:"granularity,omitempty"`
+		Start       time.Time `json:"start,omitempty"`
+		End         time.Time `json:"end,omitempty"`
+		Saved       *Saved    `json:"saved,omitempty"`
+		Filter      *Filter   `json:"filter,omitempty"`
+		Metric      string    `json:"metric,omitempty"`
 	}
 
 	Saved struct {

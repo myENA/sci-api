@@ -15,25 +15,18 @@ import (
 var requestID uint64
 
 type Request struct {
+	mu sync.RWMutex
+
 	id            uint64
 	method        string
 	uri           string
 	requiresToken bool
 
-	queryParameters   map[string]string
-	queryParametersMu sync.RWMutex
-
-	pathParameters   map[string]string
-	pathParametersMu sync.RWMutex
-
-	headers   url.Values
-	headersMu sync.RWMutex
-
-	cookies   []*http.Cookie
-	cookiesMu sync.RWMutex
-
-	body   []byte
-	bodyMu sync.RWMutex
+	queryParameters map[string]string
+	pathParameters  map[string]string
+	headers         url.Values
+	cookies         []*http.Cookie
+	body            []byte
 }
 
 func NewRequest(method, uri string, requiresToken bool) *Request {
@@ -69,49 +62,49 @@ func (r *Request) RequiresToken() bool {
 
 func (r *Request) SetHeaders(headers url.Values) {
 	var l int
-	r.headersMu.Lock()
+	r.mu.Lock()
 	r.headers = make(url.Values, len(headers))
 	for name, values := range headers {
 		l = len(values)
 		r.headers[name] = make([]string, l, l)
 		copy(r.headers[name], values)
 	}
-	r.headersMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) AddHeader(name, value string) {
-	r.headersMu.Lock()
+	r.mu.Lock()
 	r.headers.Add(name, value)
-	r.headersMu.Unlock()
+	r.mu.Unlock()
 }
 
 // SetHeader will attempt to overwrite an existing header with the same name, simply adding it if one is not found.
 func (r *Request) SetHeader(name, value string) {
-	r.headersMu.Lock()
+	r.mu.Lock()
 	r.headers.Set(name, value)
-	r.headersMu.Unlock()
+	r.mu.Unlock()
 }
 
 // RemoveHeader will attempt to remove a header from this request, returning the value being removed.
 func (r *Request) RemoveHeader(name string) (string, bool) {
-	r.headersMu.Lock()
+	r.mu.Lock()
 	current := r.headers.Get(name)
 	if current == "" {
-		r.headersMu.Unlock()
+		r.mu.Unlock()
 		return "", false
 	}
 	r.headers.Del(name)
-	r.headersMu.Unlock()
+	r.mu.Unlock()
 	return current, true
 }
 
 // Headers will return a copy of current headers on this request
 func (r *Request) Headers() url.Values {
 	var l int
-	r.headersMu.RLock()
+	r.mu.RLock()
 	l = len(r.headers)
 	if l == 0 {
-		r.headersMu.RUnlock()
+		r.mu.RUnlock()
 		return nil
 	}
 	headers := make(url.Values, l)
@@ -120,127 +113,152 @@ func (r *Request) Headers() url.Values {
 		headers[name] = make([]string, l, l)
 		copy(headers[name], values)
 	}
-	r.headersMu.RUnlock()
+	r.mu.RUnlock()
 	return headers
 }
 
 func (r *Request) SetCookies(cookies []*http.Cookie) {
-	r.cookiesMu.Lock()
+	r.mu.Lock()
 	l := len(cookies)
 	r.cookies = make([]*http.Cookie, l, l)
 	copy(r.cookies, cookies)
-	r.cookiesMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) AddCookie(cookie *http.Cookie) {
-	r.cookiesMu.Lock()
+	r.mu.Lock()
 	r.cookies = append(r.cookies, cookie)
-	r.cookiesMu.Unlock()
+	r.mu.Unlock()
 }
 
 // SetCookie will attempt to locate and overwrite a cookie with the same name, simply appending it to the list if one is
 // not found
 func (r *Request) SetCookie(cookie *http.Cookie) {
-	r.cookiesMu.Lock()
+	r.mu.Lock()
 	for i, cc := range r.cookies {
 		if cc.Name == cookie.Name {
 			r.cookies[i] = cookie
-			r.cookiesMu.Unlock()
+			r.mu.Unlock()
 			return
 		}
 	}
 	r.cookies = append(r.cookies, cookie)
-	r.cookiesMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) RemoveCookie(name string) (*http.Cookie, bool) {
-	r.cookiesMu.Lock()
+	r.mu.Lock()
 	for _, cookie := range r.cookies {
 		if cookie.Name == name {
-			r.cookiesMu.Unlock()
+			r.mu.Unlock()
 			return cookie, true
 		}
 	}
-	r.cookiesMu.Unlock()
+	r.mu.Unlock()
 	return nil, false
 }
 
 // Cookies will return a copy of the list of cookies to be used with this request
 // NOTE: The cookies are pointers.  Be aware.
 func (r *Request) Cookies() []*http.Cookie {
-	r.cookiesMu.RLock()
+	r.mu.RLock()
 	l := len(r.cookies)
 	if l == 0 {
-		r.cookiesMu.RUnlock()
+		r.mu.RUnlock()
 		return nil
 	}
 	cookies := make([]*http.Cookie, l, l)
 	copy(cookies, r.cookies)
-	r.cookiesMu.RUnlock()
+	r.mu.RUnlock()
 	return cookies
 }
 
 func (r *Request) SetQueryParameters(params map[string]string) {
-	r.queryParametersMu.Lock()
+	r.mu.Lock()
 	r.queryParameters = make(map[string]string, len(params))
 	for k, v := range params {
 		r.queryParameters[k] = v
 	}
-	r.queryParametersMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) AddQueryParameter(param, value string) {
-	r.queryParametersMu.Lock()
+	r.mu.Lock()
 	r.queryParameters[param] = value
-	r.queryParametersMu.Unlock()
+	r.mu.Unlock()
+}
+
+func (r *Request) SetQueryParameter(param, value string) {
+	r.mu.Lock()
+	r.queryParameters[param] = value
+	r.mu.Unlock()
+}
+
+func (r *Request) RemoveQueryParameter(param string) {
+	r.mu.Lock()
+	delete(r.queryParameters, param)
+	r.mu.Unlock()
+}
+
+func (r *Request) SetFilterQueryParameter(filter *Filter) error {
+	if filter == nil {
+		r.RemoveQueryParameter("filter")
+		return nil
+	}
+	if b, err := json.Marshal(filter); err != nil {
+		return err
+	} else {
+		r.SetQueryParameter("filter", string(b))
+		return nil
+	}
 }
 
 func (r *Request) QueryParameters() map[string]string {
-	r.queryParametersMu.RLock()
+	r.mu.RLock()
 	params := make(map[string]string, len(r.queryParameters))
 	for k, v := range r.queryParameters {
 		params[k] = v
 	}
-	r.queryParametersMu.RUnlock()
+	r.mu.RUnlock()
 	return params
 }
 
 func (r *Request) SetPathParameters(params map[string]string) {
-	r.pathParametersMu.Lock()
+	r.mu.Lock()
 	r.pathParameters = make(map[string]string, len(params))
 	for k, v := range params {
 		r.pathParameters[k] = v
 	}
-	r.pathParametersMu.Unlock()
+	r.mu.Unlock()
 }
 
-func (r *Request) AddPathParameter(param, value string) {
-	r.pathParametersMu.Lock()
+func (r *Request) SetPathParameter(param, value string) {
+	r.mu.Lock()
 	r.pathParameters[param] = value
-	r.pathParametersMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) PathParameters() map[string]string {
-	r.pathParametersMu.RLock()
+	r.mu.RLock()
 	params := make(map[string]string, len(r.pathParameters))
 	for k, v := range r.pathParameters {
 		params[k] = v
 	}
-	r.pathParametersMu.RUnlock()
+	r.mu.RUnlock()
 	return params
 }
 
 func (r *Request) SetBody(body []byte) {
-	r.bodyMu.Lock()
+	r.mu.Lock()
 	l := len(body)
 	if l == 0 {
 		r.body = nil
-		r.bodyMu.Unlock()
+		r.mu.Unlock()
 		return
 	}
 	r.body = make([]byte, l, l)
 	copy(r.body, body)
-	r.bodyMu.Unlock()
+	r.mu.Unlock()
 }
 
 func (r *Request) SetBodyModel(model interface{}) error {
@@ -257,15 +275,15 @@ func (r *Request) SetBodyModel(model interface{}) error {
 }
 
 func (r *Request) Body() []byte {
-	r.bodyMu.RLock()
+	r.mu.RLock()
 	l := len(r.body)
 	if l == 0 {
-		r.bodyMu.RUnlock()
+		r.mu.RUnlock()
 		return nil
 	}
 	tmp := make([]byte, l, l)
 	copy(tmp, r.body)
-	r.bodyMu.RUnlock()
+	r.mu.RUnlock()
 	return tmp
 }
 
@@ -319,19 +337,15 @@ func (r *Request) toHTTP(ctx context.Context, conf *Config) (*http.Request, erro
 		return nil, err
 	}
 
-	r.cookiesMu.RLock()
-	for _, cookie := range r.cookies {
+	for _, cookie := range r.Cookies() {
 		httpRequest.AddCookie(cookie)
 	}
-	r.cookiesMu.RUnlock()
 
-	r.headersMu.RLock()
-	for name, values := range r.headers {
+	for name, values := range r.Headers() {
 		for _, value = range values {
 			httpRequest.Header.Set(name, value)
 		}
 	}
-	r.headersMu.RUnlock()
 
 	if bodyLen != 0 {
 		httpRequest.Header.Set("Content-Type", "application/json")

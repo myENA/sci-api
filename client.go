@@ -7,13 +7,14 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 const (
 	DefaultPort       = 443
 	DefaultPathPrefix = "/api"
+
+	TimeFormat = "2006-01-02T15:04:05Z"
 )
 
 type Config struct {
@@ -84,6 +85,14 @@ func NewClient(conf *Config, authenticator Authenticator, client *http.Client) (
 
 func (c *Client) ClientConfig() Config {
 	return *c.config
+}
+
+func (c *Client) Reports() *Reports {
+	return &Reports{c: c}
+}
+
+func (c *Client) Users() *Users {
+	return &Users{c: c}
 }
 
 func (c *Client) Do(ctx context.Context, request *Request) (*http.Response, error) {
@@ -209,113 +218,4 @@ func (c *Client) do(ctx context.Context, request *Request) (AuthCAS, *http.Respo
 		return cas, nil, err
 	}
 	return cas, httpResponse, err
-}
-
-type (
-	UsersLoginPostRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-	UsersLoginPostResponse struct {
-		ID      string `json:"id"`
-		TTL     int    `json:"ttl"`
-		Created string `json:"created"`
-		UserID  int    `json:"userId"`
-	}
-)
-
-func (c *Client) UsersLoginPost(ctx context.Context, requestModel *UsersLoginPostRequest) (*http.Response, *UsersLoginPostResponse, error) {
-	if ctx == nil {
-		return nil, nil, errors.New("ctx cannot be nil")
-	}
-	var err error
-	request := NewRequest("POST", "/users/login", false)
-	if err = request.SetBodyModel(requestModel); err != nil {
-		return nil, nil, err
-	}
-	out := new(UsersLoginPostResponse)
-	httpResponse, _, err := c.Ensure(ctx, request, http.StatusOK, out)
-	return httpResponse, out, err
-}
-
-func (c *Client) UsersLogoutPost(ctx context.Context) (*http.Response, []byte, error) {
-	if ctx == nil {
-		return nil, nil, errors.New("ctx cannot be nil")
-	}
-	request := NewRequest("POST", "/users/logout", true)
-	return c.Ensure(ctx, request, http.StatusNoContent, nil)
-}
-
-type (
-	ReportGetAPMacListPostResponseDataAPMACsSlice []string
-
-	ReportGetAPMacListPostResponseData struct {
-		APMacs ReportGetAPMacListPostResponseDataAPMACsSlice `json:"apMacs"`
-	}
-
-	ReportGetAPMacListPostResponse struct {
-		Data *ReportGetAPMacListPostResponseData `json:"data"`
-	}
-)
-
-func (c *Client) ReportGetAPMacListPost(ctx context.Context, id int, query *Query) (*http.Response, *ReportGetAPMacListPostResponse, error) {
-	if ctx == nil {
-		return nil, nil, errors.New("ctx cannot be nil")
-	}
-	var err error
-	request := NewRequest("POST", "/reports/{id}/facets/apmac", true)
-	request.AddPathParameter("id", strconv.Itoa(id))
-	if err = request.SetBodyModel(query); err != nil {
-		return nil, nil, err
-	}
-	out := new(ReportGetAPMacListPostResponse)
-	httpResponse, _, err := c.Ensure(ctx, request, http.StatusOK, out)
-	return httpResponse, out, err
-}
-
-type (
-	ReportGetSsidsPostResponseDataSlice []string
-
-	ReportGetSsidsPostResponse struct {
-		Data ReportGetSsidsPostResponseDataSlice `json:"data"`
-	}
-)
-
-func (c *Client) ReportGetSsidsPost(ctx context.Context, id int, query *Query) (*http.Response, *ReportGetSsidsPostResponse, error) {
-	if ctx == nil {
-		return nil, nil, errors.New("ctx cannot be nil")
-	}
-	var err error
-	request := NewRequest("POST", "/reports/{id}/facets/ssid", true)
-	request.AddPathParameter("id", strconv.Itoa(id))
-	if err = request.SetBodyModel(query); err != nil {
-		return nil, nil, err
-	}
-	out := new(ReportGetSsidsPostResponse)
-	httpResponse, _, err := c.Ensure(ctx, request, http.StatusOK, out)
-	return httpResponse, out, err
-}
-
-// ReportGetDataPost will, on success, always return an object like:
-//
-//		{
-//			"data": [],
-//			"metadata": {}
-//		}
-//
-// The exact structure of "data" and "metadata" vary greatly depending upon the report id and section queried, and
-// therefore is not modeled here.  It is expected that the caller either doesn't care or knows which specific report
-// they're interested in.
-func (c *Client) ReportGetDataPost(ctx context.Context, id, sectionId int, query *Query) (*http.Response, []byte, error) {
-	if ctx == nil {
-		return nil, nil, errors.New("ctx cannot be nil")
-	}
-	var err error
-	request := NewRequest("POST", "/reports/{id}/sections/{sectionId}/data", true)
-	request.AddPathParameter("id", strconv.Itoa(id))
-	request.AddPathParameter("sectionId", strconv.Itoa(sectionId))
-	if err = request.SetBodyModel(query); err != nil {
-		return nil, nil, err
-	}
-	return c.Ensure(ctx, request, http.StatusOK, nil)
 }

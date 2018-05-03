@@ -112,7 +112,7 @@ func (pa *PasswordAuthenticator) Refresh(ctx context.Context, client *Client, ca
 	}
 
 	// response model
-	out := new(UsersLoginPostResponse)
+	out := new(UsersLoginPost200Response)
 
 	// execute login request
 	httpResponse, _, err := client.Ensure(ctx, request, 200, out)
