@@ -12,18 +12,18 @@ type Reports struct {
 	c *Client
 }
 type (
-	FindReportsGet200ResponseSlice []*FindReportsGet200Response
+	ListReports200ResponseSlice []*ListReports200Response
 
-	FindReportsGet200Response struct {
+	ListReports200Response struct {
 		FacetID          interface{} `json:"facetId,omitempty"`
-		FilterDataSource string      `json:"filterDataSource,omitempty"`
-		ID               int         `json:"id,omitempty"`
-		Title            string      `json:"title,omitempty"`
-		URLSegmentName   string      `json:"urlSegmentName,omitempty"`
+		FilterDataSource *string     `json:"filterDataSource,omitempty"`
+		ID               *int        `json:"id,omitempty"`
+		Title            *string     `json:"title,omitempty"`
+		URLSegmentName   *string     `json:"urlSegmentName,omitempty"`
 	}
 )
 
-func (r *Reports) FindReportsGet(ctx context.Context, filter *Filter) (*http.Response, *FindReportsGet200Response, error) {
+func (r *Reports) ListDefinitions(ctx context.Context, filter *Filter) (*http.Response, ListReports200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -32,22 +32,22 @@ func (r *Reports) FindReportsGet(ctx context.Context, filter *Filter) (*http.Res
 	if err = request.SetFilterQueryParameter(filter); err != nil {
 		return nil, nil, err
 	}
-	out := new(FindReportsGet200Response)
-	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
+	out := make(ListReports200ResponseSlice, 0)
+	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, &out)
 	return httpResponse, out, err
 }
 
 type (
 	FindReportByIDGet200Response struct {
 		FacetID          interface{} `json:"facetId,omitempty"`
-		FilterDataSource string      `json:"filterDataSource,omitempty"`
-		ID               int         `json:"id,omitempty"`
-		Title            string      `json:"title,omitempty"`
-		URLSegmentName   string      `json:"urlSegmentName,omitempty"`
+		FilterDataSource *string     `json:"filterDataSource,omitempty"`
+		ID               *int        `json:"id,omitempty"`
+		Title            *string     `json:"title,omitempty"`
+		URLSegmentName   *string     `json:"urlSegmentName,omitempty"`
 	}
 )
 
-func (r *Reports) FindReportByIDGet(ctx context.Context, reportID int, filter *Filter) (*http.Response, *FindReportByIDGet200Response, error) {
+func (r *Reports) GetDefinition(ctx context.Context, reportID int, filter *Filter) (*http.Response, *FindReportByIDGet200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -68,7 +68,7 @@ type (
 	}
 )
 
-func (r *Reports) ReportExistsByIDGet(ctx context.Context, reportID int) (*http.Response, *ReportExistsByID200Response, error) {
+func (r *Reports) Exists(ctx context.Context, reportID int) (*http.Response, *ReportExistsByID200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -81,102 +81,102 @@ func (r *Reports) ReportExistsByIDGet(ctx context.Context, reportID int) (*http.
 }
 
 type (
-	FilterFacetsByReportIDGet200ResponseDataApMacsSlice []string
+	GetAllFacetData200ResponseDataApMacsSlice []string
 
-	FilterFacetsByReportIDGet200ResponseDataSsidsSlice []*FilterFacetsByReportIDGet200ResponseDataSsids
+	GetAllFacetData200ResponseDataSsidsSlice []*GetAllFacetData200ResponseDataSsids
 
-	FilterFacetsByReportIDGet200ResponseDataSsids struct {
+	GetAllFacetData200ResponseDataSsids struct {
 		Radio *string `json:"radio,omitempty"`
 		Ssid  *string `json:"ssid,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsSlice []*FilterFacetsByReportIDGet200ResponseDataSystems
+	GetAllFacetData200ResponseDataSystemsSlice []*GetAllFacetData200ResponseDataSystems
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsApMacsSlice []string
+	GetAllFacetData200ResponseDataSystemsApMacsSlice []string
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildren
+	GetAllFacetData200ResponseDataSystemsChildrenSlice []*GetAllFacetData200ResponseDataSystemsChildren
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenApMacsSlice []string
+	GetAllFacetData200ResponseDataSystemsChildrenApMacsSlice []string
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildren
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenSlice []*GetAllFacetData200ResponseDataSystemsChildrenChildren
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenApMacsSlice []string
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenApMacsSlice []string
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildren
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSlice []*GetAllFacetData200ResponseDataSystemsChildrenChildrenChildren
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenApMacsSlice []string
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenApMacsSlice []string
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSsidsSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSsids
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSsidsSlice []*GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSsids
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSsids struct {
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSsids struct {
 		Radio *string `json:"radio,omitempty"`
 		Ssid  *string `json:"ssid,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildren struct {
-		ApMacs FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenApMacsSlice `json:"apMacs,omitempty"`
-		ID     *string                                                                            `json:"id,omitempty"`
-		Ssids  FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSsidsSlice  `json:"ssids,omitempty"`
-		Text   *string                                                                            `json:"text,omitempty"`
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenChildren struct {
+		ApMacs GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenApMacsSlice `json:"apMacs,omitempty"`
+		ID     *string                                                                  `json:"id,omitempty"`
+		Ssids  GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSsidsSlice  `json:"ssids,omitempty"`
+		Text   *string                                                                  `json:"text,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSsidsSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSsids
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenSsidsSlice []*GetAllFacetData200ResponseDataSystemsChildrenChildrenSsids
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSsids struct {
+	GetAllFacetData200ResponseDataSystemsChildrenChildrenSsids struct {
 		Radio *string `json:"radio,omitempty"`
 		Ssid  *string `json:"ssid,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildren struct {
-		ApMacs   FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenApMacsSlice   `json:"apMacs,omitempty"`
-		Children FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenChildrenSlice `json:"children,omitempty"`
-		ID       *string                                                                      `json:"id,omitempty"`
-		Ssids    FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSsidsSlice    `json:"ssids,omitempty"`
-		Text     *string                                                                      `json:"text,omitempty"`
+	GetAllFacetData200ResponseDataSystemsChildrenChildren struct {
+		ApMacs   GetAllFacetData200ResponseDataSystemsChildrenChildrenApMacsSlice   `json:"apMacs,omitempty"`
+		Children GetAllFacetData200ResponseDataSystemsChildrenChildrenChildrenSlice `json:"children,omitempty"`
+		ID       *string                                                            `json:"id,omitempty"`
+		Ssids    GetAllFacetData200ResponseDataSystemsChildrenChildrenSsidsSlice    `json:"ssids,omitempty"`
+		Text     *string                                                            `json:"text,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSsidsSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSsids
+	GetAllFacetData200ResponseDataSystemsChildrenSsidsSlice []*GetAllFacetData200ResponseDataSystemsChildrenSsids
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSsids struct {
+	GetAllFacetData200ResponseDataSystemsChildrenSsids struct {
 		Radio *string `json:"radio,omitempty"`
 		Ssid  *string `json:"ssid,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsChildren struct {
-		ApMacs   FilterFacetsByReportIDGet200ResponseDataSystemsChildrenApMacsSlice   `json:"apMacs,omitempty"`
-		Children FilterFacetsByReportIDGet200ResponseDataSystemsChildrenChildrenSlice `json:"children,omitempty"`
-		ID       *string                                                              `json:"id,omitempty"`
-		Ssids    FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSsidsSlice    `json:"ssids,omitempty"`
-		Text     *string                                                              `json:"text,omitempty"`
+	GetAllFacetData200ResponseDataSystemsChildren struct {
+		ApMacs   GetAllFacetData200ResponseDataSystemsChildrenApMacsSlice   `json:"apMacs,omitempty"`
+		Children GetAllFacetData200ResponseDataSystemsChildrenChildrenSlice `json:"children,omitempty"`
+		ID       *string                                                    `json:"id,omitempty"`
+		Ssids    GetAllFacetData200ResponseDataSystemsChildrenSsidsSlice    `json:"ssids,omitempty"`
+		Text     *string                                                    `json:"text,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsSsidsSlice []*FilterFacetsByReportIDGet200ResponseDataSystemsSsids
+	GetAllFacetData200ResponseDataSystemsSsidsSlice []*GetAllFacetData200ResponseDataSystemsSsids
 
-	FilterFacetsByReportIDGet200ResponseDataSystemsSsids struct {
+	GetAllFacetData200ResponseDataSystemsSsids struct {
 		Radio *string `json:"radio,omitempty"`
 		Ssid  *string `json:"ssid,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseDataSystems struct {
-		ApMacs   FilterFacetsByReportIDGet200ResponseDataSystemsApMacsSlice   `json:"apMacs,omitempty"`
-		Children FilterFacetsByReportIDGet200ResponseDataSystemsChildrenSlice `json:"children,omitempty"`
-		ID       *string                                                      `json:"id,omitempty"`
-		Ssids    FilterFacetsByReportIDGet200ResponseDataSystemsSsidsSlice    `json:"ssids,omitempty"`
-		Text     *string                                                      `json:"text,omitempty"`
+	GetAllFacetData200ResponseDataSystems struct {
+		ApMacs   GetAllFacetData200ResponseDataSystemsApMacsSlice   `json:"apMacs,omitempty"`
+		Children GetAllFacetData200ResponseDataSystemsChildrenSlice `json:"children,omitempty"`
+		ID       *string                                            `json:"id,omitempty"`
+		Ssids    GetAllFacetData200ResponseDataSystemsSsidsSlice    `json:"ssids,omitempty"`
+		Text     *string                                            `json:"text,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200ResponseData struct {
-		ApMacs  FilterFacetsByReportIDGet200ResponseDataApMacsSlice  `json:"apMacs,omitempty"`
-		Ssids   FilterFacetsByReportIDGet200ResponseDataSsidsSlice   `json:"ssids,omitempty"`
-		Systems FilterFacetsByReportIDGet200ResponseDataSystemsSlice `json:"systems,omitempty"`
+	GetAllFacetData200ResponseData struct {
+		ApMacs  GetAllFacetData200ResponseDataApMacsSlice  `json:"apMacs,omitempty"`
+		Ssids   GetAllFacetData200ResponseDataSsidsSlice   `json:"ssids,omitempty"`
+		Systems GetAllFacetData200ResponseDataSystemsSlice `json:"systems,omitempty"`
 	}
 
-	FilterFacetsByReportIDGet200Response struct {
-		Data *FilterFacetsByReportIDGet200ResponseData `json:"data,omitempty"`
+	GetAllFacetData200Response struct {
+		Data *GetAllFacetData200ResponseData `json:"data,omitempty"`
 	}
 )
 
-func (r *Reports) FilterFacetsByReportIDGet(ctx context.Context, reportID int, start, end time.Time, granularity string) (*http.Response, *FilterFacetsByReportIDGet200Response, error) {
+func (r *Reports) GetAllFacetData(ctx context.Context, reportID int, start, end time.Time, granularity string) (*http.Response, *GetAllFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -188,24 +188,24 @@ func (r *Reports) FilterFacetsByReportIDGet(ctx context.Context, reportID int, s
 	if granularity != "" {
 		request.SetQueryParameter("granularity", granularity)
 	}
-	out := new(FilterFacetsByReportIDGet200Response)
+	out := new(GetAllFacetData200Response)
 	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
 	return httpResponse, out, err
 }
 
 type (
-	FilterFacetsByReportIDAPMACListPost200ResponseDataApMacsSlice []string
+	GetAPMacFacetData200ResponseDataApMacsSlice []string
 
-	FilterFacetsByReportIDAPMACListPost200ResponseData struct {
-		ApMacs FilterFacetsByReportIDAPMACListPost200ResponseDataApMacsSlice `json:"apMacs,omitempty"`
+	GetAPMacFacetData200ResponseData struct {
+		ApMacs GetAPMacFacetData200ResponseDataApMacsSlice `json:"apMacs,omitempty"`
 	}
 
-	FilterFacetsByReportIDAPMACListPost200Response struct {
-		Data *FilterFacetsByReportIDAPMACListPost200ResponseData `json:"data,omitempty"`
+	GetAPMacFacetData200Response struct {
+		Data *GetAPMacFacetData200ResponseData `json:"data,omitempty"`
 	}
 )
 
-func (r *Reports) FilterFacetsByReportIDAPMACListPost(ctx context.Context, reportID int, query *Query) (*http.Response, *FilterFacetsByReportIDAPMACListPost200Response, error) {
+func (r *Reports) GetAPMACFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *GetAPMacFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -215,20 +215,20 @@ func (r *Reports) FilterFacetsByReportIDAPMACListPost(ctx context.Context, repor
 	if err = request.SetBodyModel(query); err != nil {
 		return nil, nil, err
 	}
-	out := new(FilterFacetsByReportIDAPMACListPost200Response)
+	out := new(GetAPMacFacetData200Response)
 	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
 	return httpResponse, out, err
 }
 
 type (
-	FilterFacetsByReportIDSSIDListPost200ResponseDataSlice []string
+	GetSSIDFacetData200ResponseDataSlice []string
 
-	FilterFacetsByReportIDSSIDListPost200Response struct {
-		Data FilterFacetsByReportIDSSIDListPost200ResponseDataSlice `json:"data,omitempty"`
+	GetSSIDFacetData200Response struct {
+		Data GetSSIDFacetData200ResponseDataSlice `json:"data,omitempty"`
 	}
 )
 
-func (r *Reports) FilterFacetsByReportIDSSIDListPost(ctx context.Context, reportID int, query *Query) (*http.Response, *FilterFacetsByReportIDSSIDListPost200Response, error) {
+func (r *Reports) GetSSIDFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *GetSSIDFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -238,17 +238,17 @@ func (r *Reports) FilterFacetsByReportIDSSIDListPost(ctx context.Context, report
 	if err = request.SetBodyModel(query); err != nil {
 		return nil, nil, err
 	}
-	out := new(FilterFacetsByReportIDSSIDListPost200Response)
+	out := new(GetSSIDFacetData200Response)
 	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
 	return httpResponse, out, err
 }
 
 type (
-	FilterFacetsByReportIDSystemsListPost200ResponseSlice []*FilterFacetsByReportIDSystemsListPost200Response
+	GetSystemsFacetData200ResponseSlice []*GetSystemsFacetData200Response
 
-	FilterFacetsByReportIDSystemsListPost200ResponseChildrenSlice []*FilterFacetsByReportIDSystemsListPost200ResponseChildren
+	GetSystemsFacetData200ResponseChildrenSlice []*GetSystemsFacetData200ResponseChildren
 
-	FilterFacetsByReportIDSystemsListPost200ResponseChildren struct {
+	GetSystemsFacetData200ResponseChildren struct {
 		Children   *bool   `json:"children,omitempty"`
 		Data       *string `json:"data,omitempty"`
 		FilterText *string `json:"filterText,omitempty"`
@@ -256,19 +256,19 @@ type (
 		Text       *string `json:"text,omitempty"`
 	}
 
-	FilterFacetsByReportIDSystemsListPost200ResponseState struct {
+	GetSystemsFacetData200ResponseState struct {
 		Opened *bool `json:"opened,omitempty"`
 	}
 
-	FilterFacetsByReportIDSystemsListPost200Response struct {
-		Children FilterFacetsByReportIDSystemsListPost200ResponseChildrenSlice `json:"children,omitempty"`
-		ID       *string                                                       `json:"id,omitempty"`
-		State    *FilterFacetsByReportIDSystemsListPost200ResponseState        `json:"state,omitempty"`
-		Text     *string                                                       `json:"text,omitempty"`
+	GetSystemsFacetData200Response struct {
+		Children GetSystemsFacetData200ResponseChildrenSlice `json:"children,omitempty"`
+		ID       *string                                     `json:"id,omitempty"`
+		State    *GetSystemsFacetData200ResponseState        `json:"state,omitempty"`
+		Text     *string                                     `json:"text,omitempty"`
 	}
 )
 
-func (r *Reports) FilterFacetsByReportIDSystemsListPost(ctx context.Context, reportID int, query *Query) (*http.Response, *FilterFacetsByReportIDSystemsListPost200Response, error) {
+func (r *Reports) GetSystemsFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, GetSystemsFacetData200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -278,25 +278,25 @@ func (r *Reports) FilterFacetsByReportIDSystemsListPost(ctx context.Context, rep
 	if err = request.SetBodyModel(query); err != nil {
 		return nil, nil, err
 	}
-	out := new(FilterFacetsByReportIDSystemsListPost200Response)
-	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
+	out := make(GetSystemsFacetData200ResponseSlice, 0)
+	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, &out)
 	return httpResponse, out, err
 }
 
 type (
-	FindSectionsByReportIDGet200ResponseSlice []*FindSectionsByReportIDGet200Response
+	ListSectionDefinitions200ResponseSlice []*ListSectionDefinitions200Response
 
-	FindSectionsByReportIDGet200ResponseDefaultParameters struct {
+	ListSectionDefinitions200ResponseDefaultParameters struct {
 		Granularity *string `json:"granularity,omitempty"`
 		Limit       *int    `json:"limit,omitempty"`
 		Metric      *string `json:"metric,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutColorsSlice []string
+	ListSectionDefinitions200ResponseLayoutColorsSlice []string
 
-	FindSectionsByReportIDGet200ResponseLayoutColumnsSlice []*FindSectionsByReportIDGet200ResponseLayoutColumns
+	ListSectionDefinitions200ResponseLayoutColumnsSlice []*ListSectionDefinitions200ResponseLayoutColumns
 
-	FindSectionsByReportIDGet200ResponseLayoutColumns struct {
+	ListSectionDefinitions200ResponseLayoutColumns struct {
 		Color           *string `json:"color,omitempty"`
 		ColumnName      *string `json:"columnName,omitempty"`
 		CustomComponent *string `json:"customComponent,omitempty"`
@@ -305,94 +305,94 @@ type (
 		Hidden          *bool   `json:"hidden,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutHeadersSlice []*FindSectionsByReportIDGet200ResponseLayoutHeaders
+	ListSectionDefinitions200ResponseLayoutHeadersSlice []*ListSectionDefinitions200ResponseLayoutHeaders
 
-	FindSectionsByReportIDGet200ResponseLayoutHeadersContentFormats struct {
+	ListSectionDefinitions200ResponseLayoutHeadersContentFormats struct {
 		Percentage   *string `json:"percentage,omitempty"`
 		TotalTraffic *string `json:"totalTraffic,omitempty"`
 		Traffic      *string `json:"traffic,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutHeadersContent struct {
-		Formats *FindSectionsByReportIDGet200ResponseLayoutHeadersContentFormats `json:"formats,omitempty"`
-		Text    *string                                                          `json:"text,omitempty"`
+	ListSectionDefinitions200ResponseLayoutHeadersContent struct {
+		Formats *ListSectionDefinitions200ResponseLayoutHeadersContentFormats `json:"formats,omitempty"`
+		Text    *string                                                       `json:"text,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutHeaders struct {
-		Component *string                                                   `json:"component,omitempty"`
-		Content   *FindSectionsByReportIDGet200ResponseLayoutHeadersContent `json:"content,omitempty"`
-		Name      *string                                                   `json:"name,omitempty"`
-		Options   map[string]string                                         `json:"options,omitempty"`
-		Query     *string                                                   `json:"query,omitempty"`
+	ListSectionDefinitions200ResponseLayoutHeaders struct {
+		Component *string                                                `json:"component,omitempty"`
+		Content   *ListSectionDefinitions200ResponseLayoutHeadersContent `json:"content,omitempty"`
+		Name      *string                                                `json:"name,omitempty"`
+		Options   map[string]string                                      `json:"options,omitempty"`
+		Query     *string                                                `json:"query,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutSubSectionsSlice []*FindSectionsByReportIDGet200ResponseLayoutSubSections
+	ListSectionDefinitions200ResponseLayoutSubSectionsSlice []*ListSectionDefinitions200ResponseLayoutSubSections
 
-	FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayoutSeriesSlice []*FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayoutSeries
+	ListSectionDefinitions200ResponseLayoutSubSectionsLayoutSeriesSlice []*ListSectionDefinitions200ResponseLayoutSubSectionsLayoutSeries
 
-	FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayoutSeries struct {
+	ListSectionDefinitions200ResponseLayoutSubSectionsLayoutSeries struct {
 		Area   *bool   `json:"area,omitempty"`
 		Color  *string `json:"color,omitempty"`
 		Key    *string `json:"key,omitempty"`
 		Values *string `json:"values,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayout struct {
-		Series    FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayoutSeriesSlice `json:"series,omitempty"`
-		Width     *string                                                                `json:"width,omitempty"`
-		XAxisType *string                                                                `json:"xAxisType,omitempty"`
-		YAxisType *string                                                                `json:"yAxisType,omitempty"`
+	ListSectionDefinitions200ResponseLayoutSubSectionsLayout struct {
+		Series    ListSectionDefinitions200ResponseLayoutSubSectionsLayoutSeriesSlice `json:"series,omitempty"`
+		Width     *string                                                             `json:"width,omitempty"`
+		XAxisType *string                                                             `json:"xAxisType,omitempty"`
+		YAxisType *string                                                             `json:"yAxisType,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayoutSubSections struct {
-		Component *string                                                      `json:"component,omitempty"`
-		Layout    *FindSectionsByReportIDGet200ResponseLayoutSubSectionsLayout `json:"layout,omitempty"`
-		Title     *string                                                      `json:"title,omitempty"`
+	ListSectionDefinitions200ResponseLayoutSubSections struct {
+		Component *string                                                   `json:"component,omitempty"`
+		Layout    *ListSectionDefinitions200ResponseLayoutSubSectionsLayout `json:"layout,omitempty"`
+		Title     *string                                                   `json:"title,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200ResponseLayout struct {
-		Colors      FindSectionsByReportIDGet200ResponseLayoutColorsSlice      `json:"colors,omitempty"`
-		Columns     FindSectionsByReportIDGet200ResponseLayoutColumnsSlice     `json:"columns,omitempty"`
-		Format      *string                                                    `json:"format,omitempty"`
-		Headers     FindSectionsByReportIDGet200ResponseLayoutHeadersSlice     `json:"headers,omitempty"`
-		SubSections FindSectionsByReportIDGet200ResponseLayoutSubSectionsSlice `json:"subSections,omitempty"`
-		Width       *string                                                    `json:"width,omitempty"`
+	ListSectionDefinitions200ResponseLayout struct {
+		Colors      ListSectionDefinitions200ResponseLayoutColorsSlice      `json:"colors,omitempty"`
+		Columns     ListSectionDefinitions200ResponseLayoutColumnsSlice     `json:"columns,omitempty"`
+		Format      *string                                                 `json:"format,omitempty"`
+		Headers     ListSectionDefinitions200ResponseLayoutHeadersSlice     `json:"headers,omitempty"`
+		SubSections ListSectionDefinitions200ResponseLayoutSubSectionsSlice `json:"subSections,omitempty"`
+		Width       *string                                                 `json:"width,omitempty"`
 	}
 
-	FindSectionsByReportIDGet200Response struct {
-		Component         *string                                                `json:"component,omitempty"`
-		DefaultParameters *FindSectionsByReportIDGet200ResponseDefaultParameters `json:"defaultParameters,omitempty"`
-		ID                *int                                                   `json:"id,omitempty"`
-		Layout            *FindSectionsByReportIDGet200ResponseLayout            `json:"layout,omitempty"`
-		Order             *int                                                   `json:"order,omitempty"`
-		QueryName         *string                                                `json:"queryName,omitempty"`
-		ReportID          *int                                                   `json:"reportId,omitempty"`
-		Title             *string                                                `json:"title,omitempty"`
-		URL               interface{}                                            `json:"url,omitempty"`
+	ListSectionDefinitions200Response struct {
+		Component         *string                                             `json:"component,omitempty"`
+		DefaultParameters *ListSectionDefinitions200ResponseDefaultParameters `json:"defaultParameters,omitempty"`
+		ID                *int                                                `json:"id,omitempty"`
+		Layout            *ListSectionDefinitions200ResponseLayout            `json:"layout,omitempty"`
+		Order             *int                                                `json:"order,omitempty"`
+		QueryName         *string                                             `json:"queryName,omitempty"`
+		ReportID          *int                                                `json:"reportId,omitempty"`
+		Title             *string                                             `json:"title,omitempty"`
+		URL               interface{}                                         `json:"url,omitempty"`
 	}
 )
 
-func (r *Reports) FindSectionsByReportIDGet(ctx context.Context, reportID int, filter *Filter) (*http.Response, *FindSectionsByReportIDGet200Response, error) {
+func (r *Reports) ListSectionDefinitions(ctx context.Context, reportID int, filter *Filter) (*http.Response, ListSectionDefinitions200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
 	request := NewRequest("GET", "/reports/{id}/sections", true)
 	request.SetPathParameter("id", strconv.Itoa(reportID))
 	request.SetFilterQueryParameter(filter)
-	out := new(FindSectionsByReportIDGet200Response)
-	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
+	out := make(ListSectionDefinitions200ResponseSlice, 0)
+	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, &out)
 	return httpResponse, out, err
 }
 
 type (
-	GetSectionByReportIDGet200ResponseDefaultParameters struct {
+	GetSectionDefinition200ResponseDefaultParameters struct {
 		Granularity *string `json:"granularity,omitempty"`
 		Limit       *int    `json:"limit,omitempty"`
 	}
 
-	GetSectionByReportIDGet200ResponseLayoutColumnsSlice []*GetSectionByReportIDGet200ResponseLayoutColumns
+	GetSectionDefinition200ResponseLayoutColumnsSlice []*GetSectionDefinition200ResponseLayoutColumns
 
-	GetSectionByReportIDGet200ResponseLayoutColumns struct {
+	GetSectionDefinition200ResponseLayoutColumns struct {
 		ColumnName      *string `json:"columnName,omitempty"`
 		CustomComponent *string `json:"customComponent,omitempty"`
 		DisplayName     *string `json:"displayName,omitempty"`
@@ -400,47 +400,47 @@ type (
 		Hidden          *bool   `json:"hidden,omitempty"`
 	}
 
-	GetSectionByReportIDGet200ResponseLayoutHeadersSlice []*GetSectionByReportIDGet200ResponseLayoutHeaders
+	GetSectionDefinition200ResponseLayoutHeadersSlice []*GetSectionDefinition200ResponseLayoutHeaders
 
-	GetSectionByReportIDGet200ResponseLayoutHeadersContentFormats struct {
+	GetSectionDefinition200ResponseLayoutHeadersContentFormats struct {
 		Percentage   *string `json:"percentage,omitempty"`
 		TotalTraffic *string `json:"totalTraffic,omitempty"`
 		Traffic      *string `json:"traffic,omitempty"`
 	}
 
-	GetSectionByReportIDGet200ResponseLayoutHeadersContent struct {
-		Formats *GetSectionByReportIDGet200ResponseLayoutHeadersContentFormats `json:"formats,omitempty"`
-		Text    *string                                                        `json:"text,omitempty"`
+	GetSectionDefinition200ResponseLayoutHeadersContent struct {
+		Formats *GetSectionDefinition200ResponseLayoutHeadersContentFormats `json:"formats,omitempty"`
+		Text    *string                                                     `json:"text,omitempty"`
 	}
 
-	GetSectionByReportIDGet200ResponseLayoutHeaders struct {
-		Component *string                                                 `json:"component,omitempty"`
-		Content   *GetSectionByReportIDGet200ResponseLayoutHeadersContent `json:"content,omitempty"`
-		Name      *string                                                 `json:"name,omitempty"`
-		Options   map[string]string                                       `json:"options,omitempty"`
-		Query     *string                                                 `json:"query,omitempty"`
+	GetSectionDefinition200ResponseLayoutHeaders struct {
+		Component *string                                              `json:"component,omitempty"`
+		Content   *GetSectionDefinition200ResponseLayoutHeadersContent `json:"content,omitempty"`
+		Name      *string                                              `json:"name,omitempty"`
+		Options   map[string]string                                    `json:"options,omitempty"`
+		Query     *string                                              `json:"query,omitempty"`
 	}
 
-	GetSectionByReportIDGet200ResponseLayout struct {
-		Columns GetSectionByReportIDGet200ResponseLayoutColumnsSlice `json:"columns,omitempty"`
-		Headers GetSectionByReportIDGet200ResponseLayoutHeadersSlice `json:"headers,omitempty"`
-		Width   *string                                              `json:"width,omitempty"`
+	GetSectionDefinition200ResponseLayout struct {
+		Columns GetSectionDefinition200ResponseLayoutColumnsSlice `json:"columns,omitempty"`
+		Headers GetSectionDefinition200ResponseLayoutHeadersSlice `json:"headers,omitempty"`
+		Width   *string                                           `json:"width,omitempty"`
 	}
 
-	GetSectionByReportIDGet200Response struct {
-		Component         *string                                              `json:"component,omitempty"`
-		DefaultParameters *GetSectionByReportIDGet200ResponseDefaultParameters `json:"defaultParameters,omitempty"`
-		ID                *int                                                 `json:"id,omitempty"`
-		Layout            *GetSectionByReportIDGet200ResponseLayout            `json:"layout,omitempty"`
-		Order             *int                                                 `json:"order,omitempty"`
-		QueryName         *string                                              `json:"queryName,omitempty"`
-		ReportID          *int                                                 `json:"reportId,omitempty"`
-		Title             *string                                              `json:"title,omitempty"`
-		URL               interface{}                                          `json:"url,omitempty"`
+	GetSectionDefinition200Response struct {
+		Component         *string                                           `json:"component,omitempty"`
+		DefaultParameters *GetSectionDefinition200ResponseDefaultParameters `json:"defaultParameters,omitempty"`
+		ID                *int                                              `json:"id,omitempty"`
+		Layout            *GetSectionDefinition200ResponseLayout            `json:"layout,omitempty"`
+		Order             *int                                              `json:"order,omitempty"`
+		QueryName         *string                                           `json:"queryName,omitempty"`
+		ReportID          *int                                              `json:"reportId,omitempty"`
+		Title             *string                                           `json:"title,omitempty"`
+		URL               interface{}                                       `json:"url,omitempty"`
 	}
 )
 
-func (r *Reports) FindSectionByReportIDGet(ctx context.Context, reportID, sectionID int, filter *Filter) (*http.Response, *GetSectionByReportIDGet200Response, error) {
+func (r *Reports) GetSectionDefinition(ctx context.Context, reportID, sectionID int, filter *Filter) (*http.Response, *GetSectionDefinition200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -448,12 +448,12 @@ func (r *Reports) FindSectionByReportIDGet(ctx context.Context, reportID, sectio
 	request.SetPathParameter("id", strconv.Itoa(reportID))
 	request.SetPathParameter("fk", strconv.Itoa(sectionID))
 	request.SetFilterQueryParameter(filter)
-	out := new(GetSectionByReportIDGet200Response)
+	out := new(GetSectionDefinition200Response)
 	httpResponse, _, err := r.c.Ensure(ctx, request, http.StatusOK, out)
 	return httpResponse, out, err
 }
 
-// GetDataPost will, on success, always return an object like:
+// GetSectionData will, on success, always return an object like:
 //
 //		{
 //			"data": [],
@@ -463,7 +463,7 @@ func (r *Reports) FindSectionByReportIDGet(ctx context.Context, reportID, sectio
 // The exact structure of "data" and "metadata" vary greatly depending upon the report id and section queried, and
 // therefore is not modeled here.  It is expected that the caller either doesn't care or knows which specific report
 // they're interested in.
-func (r *Reports) GetDataPost(ctx context.Context, reportID, sectionID int, query *Query) (*http.Response, []byte, error) {
+func (r *Reports) GetSectionData(ctx context.Context, reportID, sectionID int, query *Query) (*http.Response, []byte, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}

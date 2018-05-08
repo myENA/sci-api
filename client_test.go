@@ -1,10 +1,10 @@
 package api_test
 
 import (
-	"github.com/myENA/sci-api"
 	"context"
 	"crypto/tls"
 	"flag"
+	"github.com/myENA/sci-api"
 	"log"
 	"net"
 	"net/http"
@@ -84,11 +84,14 @@ func TestClient(t *testing.T) {
 
 	client := testClient(t)
 
+	jan1 := time.Date(2018, 01, 01, 0, 0, 0, 0, time.Local)
+	jan3 := time.Date(2018, 01, 03, 0, 0, 0, 0, time.Local)
+
 	t.Run("Synchronous", func(t *testing.T) {
 		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-		_, _, err := client.ReportGetAPMacListPost(ctx, 4, &api.Query{
-			Start: "2018-01-01T00:00:00+00:00",
-			End:   "2018-01-05T00:00:00+00:00",
+		_, _, err := client.Reports().GetAPMACFacetData(ctx, 4, &api.Query{
+			Start: jan1,
+			End:   jan3,
 		})
 		if err != nil {
 			t.Logf("Unable to execute query: %s", err)
@@ -96,16 +99,16 @@ func TestClient(t *testing.T) {
 		}
 
 		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-		_, _, err = client.UsersLogoutPost(ctx)
+		_, _, err = client.Users().Logout(ctx)
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
 			t.FailNow()
 		}
 
-		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-		_, _, err = client.ReportGetAPMacListPost(ctx, 4, &api.Query{
-			Start: "2018-01-01T00:00:00+00:00",
-			End:   "2018-01-05T00:00:00+00:00",
+		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+		_, _, err = client.Reports().GetAPMACFacetData(ctx, 4, &api.Query{
+			Start: jan1,
+			End:   jan3,
 		})
 		if err != nil {
 			t.Logf("Unable to execute query: %s", err)
@@ -113,7 +116,7 @@ func TestClient(t *testing.T) {
 		}
 
 		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-		_, _, err = client.UsersLogoutPost(ctx)
+		_, _, err = client.Users().Logout(ctx)
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
 			t.FailNow()

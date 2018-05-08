@@ -99,7 +99,7 @@ func (pa *PasswordAuthenticator) Refresh(ctx context.Context, client *Client, ca
 
 	// build new login request
 	request := NewRequest("POST", "/users/login", false)
-	err := request.SetBodyModel(&UsersLoginPostRequest{
+	err := request.SetBodyModel(&UsersLoginRequest{
 		Username: pa.username,
 		Password: pa.password,
 	})
@@ -112,7 +112,7 @@ func (pa *PasswordAuthenticator) Refresh(ctx context.Context, client *Client, ca
 	}
 
 	// response model
-	out := new(UsersLoginPost200Response)
+	out := new(UsersLoginResponse)
 
 	// execute login request
 	httpResponse, _, err := client.Ensure(ctx, request, 200, out)
