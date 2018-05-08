@@ -88,7 +88,7 @@ func TestClient(t *testing.T) {
 	jan3 := time.Date(2018, 01, 03, 0, 0, 0, 0, time.Local)
 
 	t.Run("Synchronous", func(t *testing.T) {
-		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		_, _, err := client.Reports().GetAPMACFacetData(ctx, 4, &api.Query{
 			Start: jan1,
 			End:   jan3,
@@ -98,7 +98,7 @@ func TestClient(t *testing.T) {
 			t.FailNow()
 		}
 
-		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		_, _, err = client.Users().Logout(ctx)
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
@@ -115,7 +115,7 @@ func TestClient(t *testing.T) {
 			t.FailNow()
 		}
 
-		ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		_, _, err = client.Users().Logout(ctx)
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
