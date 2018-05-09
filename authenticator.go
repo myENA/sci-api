@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-	"time"
 )
 
 const (
@@ -24,16 +23,12 @@ type (
 )
 
 type PasswordAuthenticator struct {
-	mu sync.RWMutex
-
+	mu       sync.RWMutex
 	username string
 	password string
-
-	cas       uint64
-	refreshed time.Time
-
-	token  string
-	cookie *http.Cookie
+	cas      uint64
+	token    string
+	cookie   *http.Cookie
 }
 
 func NewPasswordAuthenticator(username, password string) *PasswordAuthenticator {

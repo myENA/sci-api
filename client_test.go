@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"sync"
 	"testing"
 	"time"
 )
@@ -121,5 +122,55 @@ func TestClient(t *testing.T) {
 			t.Logf("Unable to logout: %s", err)
 			t.FailNow()
 		}
+	})
+
+	// This is mostly here to find issues traceable with -race, and to test the robustness of your vsz setup :)
+	t.Run("Asynchronous", func(t *testing.T) {
+		start := make(chan struct{})
+
+		wg := new(sync.WaitGroup)
+		wg.Add(10)
+		for i := 0; i < 10; i++ {
+			go func(routine int, client *api.Client, start <-chan struct{}) {
+				var ctx context.Context
+				var cancel context.CancelFunc
+				var defs api.ReportsListDefinitions200ResponseSlice
+				var err error
+				<-start
+				for i := 0; i < 5; i++ {
+					if t.Failed() {
+						break
+					}
+					ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					_, defs, err = client.Reports().ListDefinitions(ctx, nil)
+					cancel()
+					if err != nil {
+						t.Logf("Routine %d loop %d query 1 saw error: %+v", routine, i, err)
+					} else if len(defs) == 0 {
+						t.Logf("Routine %d loop %d returned an empty zone list, expected at least 1: %+v", routine, i, defs)
+					}
+
+					if routine == 0 {
+						ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+						_, _, err = client.Users().Logout(ctx)
+						cancel()
+						if err != nil {
+							t.Logf("Routine %d loop %d query 2 saw error: %+v", routine, i, err)
+						}
+					}
+
+					ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					_, _, err = client.Systems().Count(ctx)
+					cancel()
+					if err != nil {
+						t.Logf("Routine %d loop %d query 3 saw error: %+v", routine, i, err)
+					}
+				}
+				wg.Done()
+			}(i, client, start)
+		}
+
+		close(start)
+		wg.Wait()
 	})
 }

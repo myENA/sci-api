@@ -91,6 +91,10 @@ func (c *Client) Reports() *Reports {
 	return &Reports{c: c}
 }
 
+func (c *Client) Systems() *Systems {
+	return &Systems{c: c}
+}
+
 func (c *Client) Users() *Users {
 	return &Users{c: c}
 }

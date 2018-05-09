@@ -44,3 +44,19 @@ func (u *Users) Logout(ctx context.Context) (*http.Response, []byte, error) {
 	request := NewRequest("POST", "/users/logout", true)
 	return u.c.Ensure(ctx, request, http.StatusNoContent, nil)
 }
+
+type (
+	UsersCount200Response struct {
+		Count int `json:"count"`
+	}
+)
+
+func (u *Users) Count(ctx context.Context) (*http.Response, *UsersCount200Response, error) {
+	if ctx == nil {
+		return nil, nil, errors.New("ctx cannot be nil")
+	}
+	out := new(UsersCount200Response)
+	request := NewRequest("GET", "/users/count", true)
+	httpResponse, _, err := u.c.Ensure(ctx, request, http.StatusOK, out)
+	return httpResponse, out, err
+}
