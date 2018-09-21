@@ -16,7 +16,7 @@ type (
 	}
 )
 
-func (s *Systems) Count(ctx context.Context) (*http.Response, *SystemsCount200Response, error) {
+func (s Systems) Count(ctx context.Context) (*http.Response, *SystemsCount200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}

@@ -22,7 +22,6 @@ var (
 )
 
 func init() {
-	// TODO: use flagset, prolly...
 	flag.StringVar(&host, "host", "", "Hostname of SCI instance")
 	flag.IntVar(&port, "port", 443, "HTTP port to use")
 	flag.StringVar(&username, "username", "", "API Username")
@@ -94,6 +93,7 @@ func TestClient(t *testing.T) {
 			Start: jan1,
 			End:   jan3,
 		})
+		cancel()
 		if err != nil {
 			t.Logf("Unable to execute query: %s", err)
 			t.FailNow()
@@ -101,6 +101,7 @@ func TestClient(t *testing.T) {
 
 		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		_, _, err = client.Users().Logout(ctx)
+		cancel()
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
 			t.FailNow()
@@ -111,6 +112,7 @@ func TestClient(t *testing.T) {
 			Start: jan1,
 			End:   jan3,
 		})
+		cancel()
 		if err != nil {
 			t.Logf("Unable to execute query: %s", err)
 			t.FailNow()
@@ -118,6 +120,7 @@ func TestClient(t *testing.T) {
 
 		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		_, _, err = client.Users().Logout(ctx)
+		cancel()
 		if err != nil {
 			t.Logf("Unable to logout: %s", err)
 			t.FailNow()

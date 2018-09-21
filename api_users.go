@@ -15,6 +15,7 @@ type (
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
+
 	UsersLoginResponse struct {
 		ID      string `json:"id"`
 		TTL     int    `json:"ttl"`
@@ -23,7 +24,7 @@ type (
 	}
 )
 
-func (u *Users) Login(ctx context.Context, requestModel *UsersLoginRequest) (*http.Response, *UsersLoginResponse, error) {
+func (u Users) Login(ctx context.Context, requestModel *UsersLoginRequest) (*http.Response, *UsersLoginResponse, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -37,7 +38,7 @@ func (u *Users) Login(ctx context.Context, requestModel *UsersLoginRequest) (*ht
 	return httpResponse, out, err
 }
 
-func (u *Users) Logout(ctx context.Context) (*http.Response, []byte, error) {
+func (u Users) Logout(ctx context.Context) (*http.Response, []byte, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -51,7 +52,7 @@ type (
 	}
 )
 
-func (u *Users) Count(ctx context.Context) (*http.Response, *UsersCount200Response, error) {
+func (u Users) Count(ctx context.Context) (*http.Response, *UsersCount200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}

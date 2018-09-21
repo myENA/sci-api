@@ -30,8 +30,8 @@ type Request struct {
 }
 
 func NewRequest(method, uri string, requiresToken bool) *Request {
-	r := &Request{
-		id:              atomic.AddUint64(&requestID, 1),
+	r := Request{
+		id:              atomic.AddUint64(&requestID, 1), // TODO: change this to something that allows concurrency
 		method:          strings.ToUpper(method),
 		uri:             uri,
 		requiresToken:   requiresToken,
@@ -41,7 +41,7 @@ func NewRequest(method, uri string, requiresToken bool) *Request {
 		cookies:         make([]*http.Cookie, 0),
 	}
 
-	return r
+	return &r
 }
 
 func (r *Request) ID() uint64 {
@@ -305,7 +305,7 @@ func (r *Request) compileURI() string {
 }
 
 // toHTTP will attempt to construct an executable http.request
-func (r *Request) toHTTP(ctx context.Context, conf *Config) (*http.Request, error) {
+func (r *Request) toHTTP(ctx context.Context, conf Config) (*http.Request, error) {
 	var err error
 	var httpRequest *http.Request
 	var value string

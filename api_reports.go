@@ -23,7 +23,7 @@ type (
 	}
 )
 
-func (r *Reports) ListDefinitions(ctx context.Context, filter *Filter) (*http.Response, ReportsListDefinitions200ResponseSlice, error) {
+func (r Reports) ListDefinitions(ctx context.Context, filter *Filter) (*http.Response, ReportsListDefinitions200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -47,7 +47,7 @@ type (
 	}
 )
 
-func (r *Reports) GetDefinition(ctx context.Context, reportID int, filter *Filter) (*http.Response, *ReportsGetDefinition200Response, error) {
+func (r Reports) GetDefinition(ctx context.Context, reportID int, filter *Filter) (*http.Response, *ReportsGetDefinition200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -68,7 +68,7 @@ type (
 	}
 )
 
-func (r *Reports) Exists(ctx context.Context, reportID int) (*http.Response, *ReportsExistsByID200Response, error) {
+func (r Reports) Exists(ctx context.Context, reportID int) (*http.Response, *ReportsExistsByID200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -176,7 +176,7 @@ type (
 	}
 )
 
-func (r *Reports) GetAllFacetData(ctx context.Context, reportID int, start, end time.Time, granularity string) (*http.Response, *ReportsGetAllFacetData200Response, error) {
+func (r Reports) GetAllFacetData(ctx context.Context, reportID int, start, end time.Time, granularity string) (*http.Response, *ReportsGetAllFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -205,7 +205,7 @@ type (
 	}
 )
 
-func (r *Reports) GetAPMACFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *ReportsGetAPMacFacetData200Response, error) {
+func (r Reports) GetAPMACFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *ReportsGetAPMacFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -228,7 +228,7 @@ type (
 	}
 )
 
-func (r *Reports) GetSSIDFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *ReportsGetSSIDFacetData200Response, error) {
+func (r Reports) GetSSIDFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, *ReportsGetSSIDFacetData200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -268,7 +268,7 @@ type (
 	}
 )
 
-func (r *Reports) GetSystemsFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, ReportsGetSystemsFacetData200ResponseSlice, error) {
+func (r Reports) GetSystemsFacetData(ctx context.Context, reportID int, query *Query) (*http.Response, ReportsGetSystemsFacetData200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -372,7 +372,7 @@ type (
 	}
 )
 
-func (r *Reports) ListSectionDefinitions(ctx context.Context, reportID int, filter *Filter) (*http.Response, ReportsListSectionDefinitions200ResponseSlice, error) {
+func (r Reports) ListSectionDefinitions(ctx context.Context, reportID int, filter *Filter) (*http.Response, ReportsListSectionDefinitions200ResponseSlice, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -440,7 +440,7 @@ type (
 	}
 )
 
-func (r *Reports) GetSectionDefinition(ctx context.Context, reportID, sectionID int, filter *Filter) (*http.Response, *ReportsGetSectionDefinition200Response, error) {
+func (r Reports) GetSectionDefinition(ctx context.Context, reportID, sectionID int, filter *Filter) (*http.Response, *ReportsGetSectionDefinition200Response, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}
@@ -463,7 +463,7 @@ func (r *Reports) GetSectionDefinition(ctx context.Context, reportID, sectionID 
 // The exact structure of "data" and "metadata" vary greatly depending upon the report id and section queried, and
 // therefore is not modeled here.  It is expected that the caller either doesn't care or knows which specific report
 // they're interested in.
-func (r *Reports) GetSectionData(ctx context.Context, reportID, sectionID int, query *Query) (*http.Response, []byte, error) {
+func (r Reports) GetSectionData(ctx context.Context, reportID, sectionID int, query *Query) (*http.Response, []byte, error) {
 	if ctx == nil {
 		return nil, nil, errors.New("ctx cannot be nil")
 	}

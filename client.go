@@ -18,26 +18,38 @@ const (
 )
 
 type Config struct {
+	// Hostname [required]
+	//
+	// FQN of your SCI host
 	Hostname string
 
-	Port       int
+	// Port [optional]
+	//
+	// Port for SCI if not default
+	Port int
+
+	// PathPrefix [optional]
+	//
+	// API path prefix if not default
 	PathPrefix string
 }
 
 func DefaultConfig(hostname string) *Config {
-	return defaultConfig(hostname)
+	conf := defaultConfig(hostname)
+	return &conf
 }
 
-func defaultConfig(hostname string) *Config {
-	return &Config{
+func defaultConfig(hostname string) Config {
+	c := Config{
 		Hostname:   hostname,
 		Port:       DefaultPort,
 		PathPrefix: DefaultPathPrefix,
 	}
+	return c
 }
 
 type Client struct {
-	config *Config
+	config Config
 	client *http.Client
 
 	auth Authenticator
@@ -74,29 +86,29 @@ func NewClient(conf *Config, authenticator Authenticator, client *http.Client) (
 		}
 	}
 
-	c := &Client{
+	c := Client{
 		config: def,
 		client: client,
 		auth:   authenticator,
 	}
 
-	return c, nil
+	return &c, nil
 }
 
 func (c *Client) ClientConfig() Config {
-	return *c.config
+	return c.config
 }
 
-func (c *Client) Reports() *Reports {
-	return &Reports{c: c}
+func (c *Client) Reports() Reports {
+	return Reports{c: c}
 }
 
-func (c *Client) Systems() *Systems {
-	return &Systems{c: c}
+func (c *Client) Systems() Systems {
+	return Systems{c: c}
 }
 
-func (c *Client) Users() *Users {
-	return &Users{c: c}
+func (c *Client) Users() Users {
+	return Users{c: c}
 }
 
 func (c *Client) Do(ctx context.Context, request *Request) (*http.Response, error) {
